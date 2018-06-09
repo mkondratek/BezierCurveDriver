@@ -55,7 +55,7 @@
 			};
             this.refuel = function() { this.fuel = maxFuel; };
             this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
-            this.setPos = function(vec) { this.setPos(vec.x, vec.y, vec.z) };
+            this.setPos = function(vec) { this.setPos(vec.x, vec.y, vec.z); };
 			this.changeColor = function() {
 				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
 				var hex = color.hex;
@@ -275,7 +275,8 @@
 			window.addEventListener( 'resize', onWindowResize, false );
 
 			var car = new Car(1);
-			car.setPos(getOnlinePos(0));
+			alert(getOnlinePos(0));
+			//car.setPos();
 			car.tick();
 			scene.add(car.getSphere());
 
