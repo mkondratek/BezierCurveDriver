@@ -287,19 +287,12 @@
 
 			window.addEventListener( 'resize', onWindowResize, false );
 
-<<<<<<< Updated upstream
             for (var i = 0; i < cars.length; ++i) {
 			    scene.add(cars[i].getSphere());
             }
-=======
-			var car = new Car(1);
-			car.updatePos();
-			car.tick();
-			scene.add(car.getSphere());
 
 			animateCars();
 
->>>>>>> Stashed changes
 		}
 
 		function onWindowResize() {
