@@ -81,10 +81,8 @@
             };
 
 			this.onStation = function() {
-				for (var i = 0; i < cubes.length; ++i) {
+				for (var i = 0; i < params.stations; ++i) {
                 	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { 
-                        console.log(this.sphere);
-                       console.log(Math.abs(this.pos - cubes[i].pos));
                         this.refuel();
                     }
             	};
@@ -111,6 +109,10 @@
             this.pos = pos;
             this.id = id;
 			this.cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+
+            this.setStationPos = function(p) {
+                this.pos = p;
+            }
 			
             this.setPos = function(vec) {  				
 				vec.multiplyScalar(params.scale);
@@ -128,8 +130,6 @@
             };
 			this.getCube = function() { return this.cube; };
         }
-
-		var cubes = [new Station(0, 0.7), new Station(1, 0.3)];
 
 		var container, stats;
 
@@ -191,6 +191,12 @@
 		var params = {
 			spline: 'GrannyKnot',
 			scale: 4,
+            stations: 2,
+            station0: 20,
+            station1: 40,
+            station2: 60,
+            station3: 80,
+            station4: 100,
 			extrusionSegments: 100,
 			radiusSegments: 3,
 			closed: true,
@@ -199,9 +205,31 @@
 			cameraHelper: false,
 		};
 
+		var cubes = [
+            new Station(0, params.station0 / 100),
+            new Station(1, params.station1 / 100),
+            new Station(2, params.station2 / 100),
+            new Station(3, params.station3 / 100),
+            new Station(4, params.station4 / 100)
+        ];	
+
 		var material = new THREE.MeshLambertMaterial( { color: 0x00ffe0 } );
 
 		var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.3, wireframe: true, transparent: true } );
+            
+        const stationLimit = 5;
+
+        function addStation(v) {
+			for (var i = 0; i < stationLimit; ++i) {
+			    scene.remove(cubes[i].getCube());
+            }  
+   
+            params.stations = v;
+
+			for (var i = 0; i < params.stations; ++i) {
+			    scene.add(cubes[i].getCube());
+            }
+        }
 
 		function addTube() {
 
@@ -317,6 +345,11 @@
 			// dat.GUI
 
 			var gui = new dat.GUI( { width: 300 } );
+	
+
+			for (var i = 0; i < params.stations; ++i) {
+			    scene.add(cubes[i].getCube());
+            }
 
 			var folderGeometry = gui.addFolder( 'Geometry' );
 			folderGeometry.add( params, 'spline', Object.keys( splines ) ).onChange( function( value ) { addTube(); } );
@@ -324,13 +357,14 @@
 			folderGeometry.add( params, 'extrusionSegments', 50, 500 ).step( 50 ).onChange( function( value ) { addTube(); } );
 			folderGeometry.add( params, 'radiusSegments', 2, 12 ).step( 1 ).onChange( function( value ) { addTube(); } );
 			folderGeometry.add( params, 'closed').onChange( function( value ) { addTube(); } );
-			folderGeometry.open();
+			folderGeometry.add( params, 'stations', 0, stationLimit).step(1).onChange( function( value ) { addStation(value); } );
+            for (var i = 0; i < stationLimit; ++i) {
+                folderGeometry.add( params, 'station' + i.toString(), 0, 100).step(0.5).onChange( function( value ) { cubes[i].setStationPos(value / 100); } );
+            }
 
 			var folderCamera = gui.addFolder( 'Camera' );
 			folderCamera.add( params, 'animationView').onChange( function( value ) { animateCamera(); } );
 			folderCamera.add( params, 'lookAhead').onChange( function( value ) { animateCamera(); } );
-			folderCamera.add( params, 'cameraHelper').onChange( function( value ) { animateCamera(); } );
-			folderCamera.open();
 
 			// controls
 
@@ -345,10 +379,6 @@
             }
 
 			animateCars();
-
-			for (var i = 0; i < cubes.length; ++i) {
-			    scene.add(cubes[i].getCube());
-            }
 
 		}
 
@@ -427,7 +457,7 @@
                 cars[i].tick();
             }
 
-			for (var i = 0; i < cubes.length; ++i) {
+			for (var i = 0; i < params.stations; ++i) {
                 cubes[i].tick();
             }
 
