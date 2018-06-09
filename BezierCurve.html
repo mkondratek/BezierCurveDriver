@@ -48,18 +48,18 @@
         function Car (id) {
             this.id = id;
             this.fuel = maxFuel;
-            this.pos = new THREE.Vector3(10, 10, 0);
 			this.sphere = new THREE.Mesh( spehereGeometry, spehereMaterial );
 			
-            this.setPos = function(x, y, z) { this.pos = new THREE.Vector3(x, y, z); };
+            this.setPos = function(x, y, z) {  
+				sphere.position.set(x, y, z);				
+			};
             this.refuel = function() { this.fuel = maxFuel; };
             this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
-            this.setPos = function(vec) { this.pos = vec; };
+            this.setPos = function(vec) { this.setPos(vec.x, vec.y, vec.z) };
 			this.changeColor = function() {
 				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
 				var hex = color.hex;
 				this.spehere.material.color.setHex( hex );
-				sphere.position.set(pos.x, pos.y, pos.z);
 				};
 			this.tick = function() { this.useFuelUnit(); };
 			this.getSphere = function() { return this.sphere; };
