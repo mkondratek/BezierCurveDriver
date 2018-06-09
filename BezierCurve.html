@@ -82,12 +82,13 @@
 
 			this.onStation = function() {
 				for (var i = 0; i < cubes.length; ++i) {
-                	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { this.refuel; }
+                	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { this.refuel(); }
+					console.log("FUEL: " + this.id + " " + this.fuel);
+					console.log("POS CAR[ " + this.id + "], POS STATION[" + i + "] :" + Math.abs(this.pos - cubes[i].pos));
             	};
 			};
 
 			this.tick = function() {
-				console.log(this.id + " " + this.fuel);
                 this.useFuelUnit();
                 this.changeColor();
                 this.pos += (this.fuel > 0 ? speed : 0);
@@ -109,10 +110,12 @@
             this.id = id;
 			this.cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
 			
-            this.setPos = function(vec) {  
+            this.setPos = function(vec) {  				
 				vec.multiplyScalar(params.scale);
-                this.cube.width *= params.scale;
-                this.cube.position.set(vec.x, vec.y, vec.z);				
+                this.cube.scale.x = params.scale / 4;
+                this.cube.scale.y = params.scale / 4;
+                this.cube.scale.z = params.scale / 4;
+                this.cube.position.set(vec.x, vec.y, vec.z);	
 			};
             this.updatePos = function() {
                 var vec = getOnlinePos(this.pos);
