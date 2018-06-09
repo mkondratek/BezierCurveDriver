@@ -44,9 +44,9 @@
             this.fuel = 100;
             this.pos = new THREE.Vector3(0, 0, 0);
             this.refuel = function() { this.fuel = 100; };
-            this.useFuelUnit() { if (this.fuel > 0) { this.fuel = this.fuel - 1; } };
-            this.setPos(x, y, z) { this.pos = new THREE.Vector3(x, y, z); };
-            this.setPos(vec) { this.pos = vec; }
+            this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 1; } };
+            this.setPos = function(x, y, z) { this.pos = new THREE.Vector3(x, y, z); };
+            this.setPos = function(vec) { this.pos = vec; }
         }
 
 		var container, stats;
