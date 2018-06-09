@@ -53,6 +53,7 @@
                 console.log(vec);
 				vec.multiplyScalar(params.scale);
                 console.log(vec);
+                this.sphere.radius *= params.scale;
                 this.sphere.position.set(vec.x, vec.y, vec.z);				
 
 			};
