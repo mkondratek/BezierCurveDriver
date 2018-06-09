@@ -100,7 +100,7 @@
             this.getSphere = function() { return this.sphere; };
         }
 
-        var cars = [new Car(0, 0), new Car(1, 0.1)];
+        var cars = [];//new Car(0, 0), new Car(1, 0.1)];
 
 		var cubeGeometry = new THREE.BoxGeometry( 16, 16, 16 );
 		var cubeMaterial = new THREE.MeshBasicMaterial( {color: 0x00ffe0} );
@@ -190,20 +190,22 @@
 		var params = {
 			spline: 'GrannyKnot',
 			scale: 4,
-            stations: 2,
+            stations: 3,
             station0: 20,
             station1: 40,
             station2: 60,
             station3: 80,
             station4: 100,
 			extrusionSegments: 100,
-			radiusSegments: 3,
+			radiusSegments: 5,
 			closed: true,
 			animationView: false,
 			lookAhead: false,
 			cameraHelper: false,
+			countOfCars: 4,
 		};
 
+		
 		var cubes = [
             new Station(0, params.station0 / 100),
             new Station(1, params.station1 / 100),
@@ -282,6 +284,22 @@
 			return getCurrentSpline().getPointAt(x);
 		}
 
+		function manageCars() {
+			var diff = cars.length - params.countOfCars ;
+			if (diff < 0) {
+				for (var i = 0; i < Math.abs(diff); i++) {
+					// cars.push(new Car(cars.length, (Math.random() * 1)/100));
+					cars.push(new Car(cars.length, (cars.length > 0 ? cars[cars.length - 1].pos : 0) + (Math.random() + 1) / (2 * params.countOfCars)));
+					scene.add(cars[cars.length - 1].getSphere());
+				}
+			} else if (diff > 0) {
+				for (var i = 0; i < Math.abs(diff); i++) {
+					scene.remove(cars[cars.length - 1].getSphere());
+					cars.pop();
+				}
+			}
+		}
+
 		init();
 		animate();
 
@@ -296,6 +314,7 @@
 
 			scene = new THREE.Scene();
 			scene.background = new THREE.Color( 0xf0f0f0 );
+			manageCars();
 
 
 			var light = new THREE.DirectionalLight( 0xffffff );
@@ -345,13 +364,18 @@
 			folderGeometry.add( params, 'extrusionSegments', 50, 500 ).step( 50 ).onChange( function( value ) { addTube(); } );
 			folderGeometry.add( params, 'radiusSegments', 2, 12 ).step( 1 ).onChange( function( value ) { addTube(); } );
 			folderGeometry.add( params, 'closed').onChange( function( value ) { addTube(); } );
-			folderGeometry.add( params, 'stations', 0, stationLimit).step(1).onChange( function( value ) { addStation(value); } );
-            for (var i = 0; i < stationLimit; ++i) {
-                folderGeometry.add( params, 'station' + i.toString(), 0, 100).step(0.5).onChange( function( value ) { cubes[i].setStationPos(value / 100); } );
-            }
+			
 
 			var folderCamera = gui.addFolder( 'Camera' );
 			folderCamera.add( params, 'animationView').onChange( function( value ) { animateCamera(); } );
+
+			var folderTrack = gui.addFolder( 'Track Settings' );
+			folderTrack.add( params, 'countOfCars', 0, 10).step(1).onChange( function(value) { manageCars(); });
+			folderTrack.add( params, 'stations', 0, stationLimit).step(1).onChange( function( value ) { addStation(value); } );
+            for (var i = 0; i < stationLimit; ++i) {
+                folderTrack.add( params, 'station' + i.toString(), 0, 100).step(0.5).onChange( function( value ) { cubes[i].setStationPos(value / 100); } );
+            }
+			folderTrack.open();
 
 			var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
