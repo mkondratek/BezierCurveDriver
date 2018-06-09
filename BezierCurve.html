@@ -368,6 +368,7 @@
 
 			var folderCamera = gui.addFolder( 'Camera' );
 			folderCamera.add( params, 'animationView').onChange( function( value ) { animateCamera(); } );
+			folderCamera.open();
 
 			var folderTrack = gui.addFolder( 'Track Settings' );
 			folderTrack.add( params, 'countOfCars', 0, 10).step(1).onChange( function(value) { manageCars(); });
