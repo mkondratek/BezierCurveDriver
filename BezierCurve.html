@@ -373,9 +373,11 @@
 			var folderTrack = gui.addFolder( 'Track Settings' );
 			folderTrack.add( params, 'countOfCars', 0, 10).step(1).onChange( function(value) { manageCars(); });
 			folderTrack.add( params, 'stations', 0, stationLimit).step(1).onChange( function( value ) { addStation(value); } );
-            for (var i = 0; i < stationLimit; ++i) {
-                folderTrack.add( params, 'station' + i.toString(), 0, 100).step(0.5).onChange( function( value ) { cubes[i].setStationPos(value / 100); } );
-            }
+            folderTrack.add( params, 'station0', 0, 100).step(0.5).onChange( function( value ) { cubes[0].setStationPos(value / 100); } );
+			folderTrack.add( params, 'station1', 0, 100).step(0.5).onChange( function( value ) { cubes[1].setStationPos(value / 100); } );
+			folderTrack.add( params, 'station2', 0, 100).step(0.5).onChange( function( value ) { cubes[2].setStationPos(value / 100); } );
+			folderTrack.add( params, 'station3', 0, 100).step(0.5).onChange( function( value ) { cubes[3].setStationPos(value / 100); } );
+			folderTrack.add( params, 'station4', 0, 100).step(0.5).onChange( function( value ) { cubes[4].setStationPos(value / 100); } );
 			folderTrack.open();
 
 			var controls = new THREE.OrbitControls( camera, renderer.domElement );
