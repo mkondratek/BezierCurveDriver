@@ -38,43 +38,57 @@
 		<script src="three.js-master/examples/js/libs/dat.gui.min.js"></script>
 
 		<script>
-		var spehereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
-		var spehereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
+		var sphereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
+		var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
 
 		const maxFuel = 100;
-        const speed = 0.0005;
+        const consumption = 0.2;
+        const speed = 0.002;
         
         function Car (id, pos = 0) {
             this.pos = pos;
             this.id = id;
             this.fuel = maxFuel;
-			this.sphere = new THREE.Mesh( spehereGeometry, spehereMaterial );
+			this.sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
 			
             this.setPos = function(vec) {  
 				vec.multiplyScalar(params.scale);
-                this.sphere.radius *= params.scale;
+                this.sphere.scale.x = params.scale / 4;
+                this.sphere.scale.y = params.scale / 4;
+                this.sphere.scale.z = params.scale / 4;
                 this.sphere.position.set(vec.x, vec.y, vec.z);				
 
 			};
 
             this.refuel = function() { this.fuel = maxFuel; };
-            this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
+            
+            this.useFuelUnit = function() {
+                if (this.fuel - consumption > 0) {
+                    this.fuel -= consumption;
+                } else {
+                    this.fuel = 0;
+                }
+            };
+
 			this.changeColor = function() {
 				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
-				this.sphere.material.color.setHex( color.hex );
-				};
+				this.sphere.material.color = color;
+	    	};
+
             this.updatePos = function() {
                 var vec = getOnlinePos(this.pos);
                 this.setPos(vec);
-            }
+            };
+
 			this.tick = function() {
                 this.useFuelUnit();
                 this.changeColor();
-                this.pos += speed;
-                if (this.pos > 100) { this.pos -= 100; }
+                this.pos += (this.fuel > 0 ? speed : 0);
+                if (this.pos > 1) { this.pos -= 1; }
                 this.updatePos();
             };
-			this.getSphere = function() { return this.sphere; };
+			
+            this.getSphere = function() { return this.sphere; };
         }
 
         var cars = [new Car(0, 0), new Car(1, 0.1)];
@@ -147,7 +161,7 @@
 			cameraHelper: false,
 		};
 
-		var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+		var material = new THREE.MeshLambertMaterial( { color: 0xc5be40 } );
 
 		var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.3, wireframe: true, transparent: true } );
 
