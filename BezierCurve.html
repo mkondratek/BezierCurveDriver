@@ -52,6 +52,7 @@
             this.setPos = function(vec) {  
                 console.log(vec);
 				vec.multiplyScalar(params.scale);
+                console.log(vec);
                 this.sphere.position.set(vec.x, vec.y, vec.z);				
 
 			};
@@ -60,12 +61,11 @@
             this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
 			this.changeColor = function() {
 				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
-				var hex = color.hex;
-				this.spehere.material.color.setHex( hex );
+				this.sphere.material.color.setHex( color.hex );
 				};
             this.updatePos = function() {
-                var pos = getOnlinePos(pos);
-                this.setPos(pos.x, pos.y, pos.z);
+                var vec = getOnlinePos(this.pos);
+                this.setPos(vec);
             }
 			this.tick = function() {
                 this.useFuelUnit();
@@ -171,6 +171,10 @@
 		function setScale() {
 
 			mesh.scale.set( params.scale, params.scale, params.scale );
+            for (var i = 0; i < cars.length; ++i) {
+                console.log(cars[i]);
+                cars[i].updatePos();
+            }
 		}
 
 
@@ -284,8 +288,7 @@
 			window.addEventListener( 'resize', onWindowResize, false );
 
 			var car = new Car(1);
-			var pos = getOnlinePos(0);
-			car.setPos(pos);
+			car.updatePos();
 			car.tick();
 			scene.add(car.getSphere());
 
