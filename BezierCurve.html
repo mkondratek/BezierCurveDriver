@@ -38,17 +38,17 @@
 		<script src="three.js-master/examples/js/libs/dat.gui.min.js"></script>
 
 		<script>
-		var sphereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
-		var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
 
 		const maxFuel = 100;
-        const consumption = 0.2;
+        const consumption = 0.3;
         const speed = 0.002;
         
         function Car (id, pos = 0) {
             this.pos = pos;
             this.id = id;
             this.fuel = maxFuel;
+            var sphereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
+            var sphereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
 			this.sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
 			
             this.setPos = function(vec) {  
@@ -82,9 +82,11 @@
 
 			this.onStation = function() {
 				for (var i = 0; i < cubes.length; ++i) {
-                	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { this.refuel(); }
-					console.log("FUEL: " + this.id + " " + this.fuel);
-					console.log("POS CAR[ " + this.id + "], POS STATION[" + i + "] :" + Math.abs(this.pos - cubes[i].pos));
+                	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { 
+                        console.log(this.sphere);
+                       console.log(Math.abs(this.pos - cubes[i].pos));
+                        this.refuel();
+                    }
             	};
 			};
 
