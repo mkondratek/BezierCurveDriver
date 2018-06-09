@@ -79,6 +79,31 @@
 
         var cars = [new Car(0, 0), new Car(1, 0.1)];
 
+		var cubeGeometry = new THREE.BoxGeometry( 16, 16, 16 );
+		var cubeMaterial = new THREE.MeshBasicMaterial( {color: 0x00ffe0} );
+
+		function Station (id, pos = 0) {
+            this.pos = pos;
+            this.id = id;
+			this.cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+			
+            this.setPos = function(vec) {  
+				vec.multiplyScalar(params.scale);
+                this.cube.width *= params.scale;
+                this.cube.position.set(vec.x, vec.y, vec.z);				
+			};
+            this.updatePos = function() {
+                var vec = getOnlinePos(this.pos);
+                this.setPos(vec);
+            };
+			this.tick = function() {
+                this.updatePos();
+            };
+			this.getCube = function() { return this.cube; };
+        }
+
+		var cubes = [new Station(0, 0.7), new Station(1, 0.3)];
+
 		var container, stats;
 
 		var camera, scene, renderer, splineCamera, cameraHelper, cameraEye;
@@ -294,6 +319,10 @@
 
 			animateCars();
 
+			for (var i = 0; i < cubes.length; ++i) {
+			    scene.add(cubes[i].getCube());
+            }
+
 		}
 
 		function onWindowResize() {
@@ -310,7 +339,6 @@
 		function animate() {
 
 			requestAnimationFrame( animate );
-
 			render();
 			stats.update();
 
@@ -370,6 +398,10 @@
 
 			for (var i = 0; i < cars.length; ++i) {
                 cars[i].tick();
+            }
+
+			for (var i = 0; i < cubes.length; ++i) {
+                cubes[i].tick();
             }
 
 			renderer.render(scene, camera);
