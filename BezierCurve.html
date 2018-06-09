@@ -40,8 +40,6 @@
 		<script>
 		var spehereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
 		var spehereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
-			// var sphere = new THREE.Mesh( geometry, material );
-			// scene.add( sphere );
 
 		const maxFuel = 100;
         
@@ -51,11 +49,12 @@
 			this.sphere = new THREE.Mesh( spehereGeometry, spehereMaterial );
 			
             this.setPos = function(x, y, z) {  
-				sphere.position.set(x, y, z);				
+                console.log(this.sphere);
+				this.sphere.position.set(x, y, z);				
 			};
+
             this.refuel = function() { this.fuel = maxFuel; };
             this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
-            this.setPos = function(vec) { this.setPos(vec.x, vec.y, vec.z); };
 			this.changeColor = function() {
 				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
 				var hex = color.hex;
@@ -275,8 +274,11 @@
 			window.addEventListener( 'resize', onWindowResize, false );
 
 			var car = new Car(1);
-			alert(getOnlinePos(0));
-			//car.setPos();
+			var pos = getOnlinePos(0);
+            console.log(pos.x);
+            console.log(pos.y);
+            console.log(pos.z);
+			car.setPos(pos.x, pos.y, pos.z);
 			car.tick();
 			scene.add(car.getSphere());
 
