@@ -38,16 +38,34 @@
 		<script src="three.js-master/examples/js/libs/dat.gui.min.js"></script>
 
 		<script>
+		var spehereGeometry = new THREE.SphereGeometry( 10, 32, 32 );
+		var spehereMaterial = new THREE.MeshBasicMaterial( {color: 0x00FF00} );
+			// var sphere = new THREE.Mesh( geometry, material );
+			// scene.add( sphere );
+
+		const maxFuel = 100;
         
         function Car (id) {
             this.id = id;
-            this.fuel = 100;
-            this.pos = new THREE.Vector3(0, 0, 0);
-            this.refuel = function() { this.fuel = 100; };
-            this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 1; } };
+            this.fuel = maxFuel;
+            this.pos = new THREE.Vector3(10, 10, 0);
+			this.sphere = new THREE.Mesh( spehereGeometry, spehereMaterial );
+			
             this.setPos = function(x, y, z) { this.pos = new THREE.Vector3(x, y, z); };
-            this.setPos = function(vec) { this.pos = vec; }
+            this.refuel = function() { this.fuel = maxFuel; };
+            this.useFuelUnit = function() { if (this.fuel > 0) { this.fuel = this.fuel - 0.01; } };
+            this.setPos = function(vec) { this.pos = vec; };
+			this.changeColor = function() {
+				var color = new THREE.Color(0, this.fuel/maxFuel, 0);
+				var hex = color.hex;
+				this.spehere.material.color.setHex( hex );
+				sphere.position.set(pos.x, pos.y, pos.z);
+				};
+			this.tick = function() { this.useFuelUnit(); };
+			this.getSphere = function() { return this.sphere; };
         }
+
+		
 
 		var container, stats;
 
@@ -166,6 +184,14 @@
 
 		}
 
+		function getCurrentSpline() {
+			return splines[ params.spline ];
+		}
+
+		function getOnlinePos(x) {
+			return getCurrentSpline().getPointAt(x);
+		}
+
 		init();
 		animate();
 
@@ -247,6 +273,11 @@
 			// event listener
 
 			window.addEventListener( 'resize', onWindowResize, false );
+
+			var car = new Car(1);
+			car.setPos(getOnlinePos(0));
+			car.tick();
+			scene.add(car.getSphere());
 
 		}
 
