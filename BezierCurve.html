@@ -44,13 +44,16 @@
 		const maxFuel = 100;
         
         function Car (id) {
+            this.pos = 0;
             this.id = id;
             this.fuel = maxFuel;
 			this.sphere = new THREE.Mesh( spehereGeometry, spehereMaterial );
 			
-            this.setPos = function(x, y, z) {  
-                console.log(this.sphere);
-				this.sphere.position.set(x, y, z);				
+            this.setPos = function(vec) {  
+                console.log(vec);
+				vec.multiplyScalar(params.scale);
+                this.sphere.position.set(vec.x, vec.y, vec.z);				
+
 			};
 
             this.refuel = function() { this.fuel = maxFuel; };
@@ -60,11 +63,19 @@
 				var hex = color.hex;
 				this.spehere.material.color.setHex( hex );
 				};
-			this.tick = function() { this.useFuelUnit(); };
+            this.updatePos = function() {
+                var pos = getOnlinePos(pos);
+                this.setPos(pos.x, pos.y, pos.z);
+            }
+			this.tick = function() {
+                this.useFuelUnit();
+                this.changeColor();
+                this.updatePos();
+            };
 			this.getSphere = function() { return this.sphere; };
         }
 
-		
+        var cars = [new Car(0)];
 
 		var container, stats;
 
@@ -160,7 +171,6 @@
 		function setScale() {
 
 			mesh.scale.set( params.scale, params.scale, params.scale );
-
 		}
 
 
@@ -275,10 +285,7 @@
 
 			var car = new Car(1);
 			var pos = getOnlinePos(0);
-            console.log(pos.x);
-            console.log(pos.y);
-            console.log(pos.z);
-			car.setPos(pos.x, pos.y, pos.z);
+			car.setPos(pos);
 			car.tick();
 			scene.add(car.getSphere());
 
