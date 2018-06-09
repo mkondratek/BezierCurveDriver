@@ -67,10 +67,17 @@
                 var vec = getOnlinePos(this.pos);
                 this.setPos(vec);
             }
+			this.onStation = function() {
+				for (var i = 0; i < cubes.length; ++i) {
+                	if (Math.abs(this.pos - cubes[i].pos) <= speed ) { this.refuel; }
+            	};
+			}
 			this.tick = function() {
+				console.log(this.id + " " + this.fuel);
                 this.useFuelUnit();
                 this.changeColor();
                 this.pos += speed;
+				this.refuel();
                 if (this.pos > 100) { this.pos -= 100; }
                 this.updatePos();
             };
@@ -172,7 +179,7 @@
 			cameraHelper: false,
 		};
 
-		var material = new THREE.MeshLambertMaterial( { color: 0xff00ff } );
+		var material = new THREE.MeshLambertMaterial( { color: 0x00ffe0 } );
 
 		var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.3, wireframe: true, transparent: true } );
 
